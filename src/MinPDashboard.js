@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { minPLogits, softmax } from './minp-utils';
+import { Rocket } from 'lucide-react';
 
 /**
  * Min-P Dashboard: Visualizes Min-P filtering on logits.
@@ -38,14 +39,16 @@ export default function MinPDashboard() {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 w-full">
+    <div className="p-6 bg-gray-50 rounded-lg shadow-md">
       <div className="w-full">
-        <h1 className="text-2xl font-bold mb-4">Min-P Filtering Demo</h1>
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Input Text</label>
-          <div className="bg-blue-50 rounded px-4 py-3 text-base font-mono">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Rocket className="text-blue-500" />
+          <h1 className="text-2xl font-bold text-center">Min-P Filtering: Language Model Demo</h1>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+          <p className="font-mono text-lg border-l-4 border-blue-500 pl-3 py-2 bg-blue-50">
             {context}
-          </div>
+          </p>
         </div>
         <p className="mb-4 text-gray-700">
           Min-P filtering dynamically removes low-probability tokens based on the peak probability in the current distribution.
