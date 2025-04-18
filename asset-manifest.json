@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/explainer-apps/temperature-demo/static/css/main.a5c35ee5.css",
+    "main.js": "/explainer-apps/temperature-demo/static/js/main.11c123f2.js",
+    "static/js/453.ce3f7aa6.chunk.js": "/explainer-apps/temperature-demo/static/js/453.ce3f7aa6.chunk.js",
+    "index.html": "/explainer-apps/temperature-demo/index.html",
+    "main.a5c35ee5.css.map": "/explainer-apps/temperature-demo/static/css/main.a5c35ee5.css.map",
+    "main.11c123f2.js.map": "/explainer-apps/temperature-demo/static/js/main.11c123f2.js.map",
+    "453.ce3f7aa6.chunk.js.map": "/explainer-apps/temperature-demo/static/js/453.ce3f7aa6.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a5c35ee5.css",
+    "static/js/main.11c123f2.js"
+  ]
+}
