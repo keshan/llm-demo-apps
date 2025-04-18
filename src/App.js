@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Sliders, Rocket, Download, Camera } from 'lucide-react';
 import MinPDashboard from './MinPDashboard';
 import TopKDashboard from './TopKDashboard';
+import TopPDashboard from './TopPDashboard';
 
 // Note: In a real implementation, you would need to install these libraries:
 // npm install html2canvas gif.js --save
@@ -35,12 +36,20 @@ export default function App() {
           >
             Top-K Filtering
           </button>
+        <button
+            className={`px-4 py-2 rounded font-semibold transition-colors ${dashboard === 'topp' ? 'bg-cyan-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => setDashboard('topp')}
+            aria-current={dashboard === 'topp' ? 'page' : undefined}
+          >
+            Top-P Filtering
+          </button>
         </nav>
       </header>
       <main className="w-full py-8 px-4">
         {dashboard === 'temperature' && <TemperatureScalingDemo />}
         {dashboard === 'minp' && <MinPDashboard />}
         {dashboard === 'topk' && <TopKDashboard />}
+        {dashboard === 'topp' && <TopPDashboard />}
       </main>
     </div>
   );
