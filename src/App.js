@@ -4,6 +4,7 @@ import { Sliders, Rocket, Download, Camera } from 'lucide-react';
 import MinPDashboard from './MinPDashboard';
 import TopKDashboard from './TopKDashboard';
 import TopPDashboard from './TopPDashboard';
+import FilterPipelineDashboard from './FilterPipelineDashboard';
 
 // Note: In a real implementation, you would need to install these libraries:
 // npm install html2canvas gif.js --save
@@ -43,6 +44,13 @@ export default function App() {
           >
             Top-P Filtering
           </button>
+        <button
+            className={`px-4 py-2 rounded font-semibold transition-colors ${dashboard === 'pipeline' ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => setDashboard('pipeline')}
+            aria-current={dashboard === 'pipeline' ? 'page' : undefined}
+          >
+            Filter Pipeline
+          </button>
         </nav>
       </header>
       <main className="w-full py-8 px-4">
@@ -50,6 +58,7 @@ export default function App() {
         {dashboard === 'minp' && <MinPDashboard />}
         {dashboard === 'topk' && <TopKDashboard />}
         {dashboard === 'topp' && <TopPDashboard />}
+        {dashboard === 'pipeline' && <FilterPipelineDashboard />}
       </main>
     </div>
   );
