@@ -1,11 +1,42 @@
 import { useState, useEffect, useRef } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Sliders, Rocket, Download, Camera } from 'lucide-react';
+import MinPDashboard from './MinPDashboard';
 
 // Note: In a real implementation, you would need to install these libraries:
 // npm install html2canvas gif.js --save
 
-export default function TemperatureScalingDemo() {
+export default function App() {
+  const [dashboard, setDashboard] = useState('temperature');
+
+  return (
+    <div className="min-h-screen bg-gray-100 w-full">
+      <header className="bg-white shadow sticky top-0 z-10 w-full">
+        <nav className="flex gap-2 p-4 w-full">
+          <button
+            className={`px-4 py-2 rounded font-semibold transition-colors ${dashboard === 'temperature' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => setDashboard('temperature')}
+            aria-current={dashboard === 'temperature' ? 'page' : undefined}
+          >
+            Temperature Scaling
+          </button>
+          <button
+            className={`px-4 py-2 rounded font-semibold transition-colors ${dashboard === 'minp' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => setDashboard('minp')}
+            aria-current={dashboard === 'minp' ? 'page' : undefined}
+          >
+            Min-P Filtering
+          </button>
+        </nav>
+      </header>
+      <main className="w-full py-8 px-4">
+        {dashboard === 'temperature' ? <TemperatureScalingDemo /> : <MinPDashboard />}
+      </main>
+    </div>
+  );
+}
+
+function TemperatureScalingDemo() {
   // Use the provided rocket example
   const context = "The rocket lifted off towards the";
   const tokens = ["moon", "stars", "sky", "station", "launchpad"];
