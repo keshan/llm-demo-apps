@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { minPLogits, softmax } from './minp-utils';
+import { topKLogits } from './topk-utils';
+import { softmax } from './minp-utils';
 
 /**
- * Min-P Dashboard: Visualizes Min-P filtering on logits.
+ * Top-K Dashboard: Visualizes Top-K filtering on logits.
  * @returns {JSX.Element}
  */
-export default function MinPDashboard() {
-  // Example context and tokens (same as temperature scaling for consistency)
+export default function TopKDashboard() {
   const context = "The rocket lifted off towards the";
   const tokens = ["moon", "stars", "sky", "station", "launchpad"];
   const baseLogits = [3.5, 3.1, 2.9, 2.0, -0.5];
 
-  // UI state
   const [temperature, setTemperature] = useState(0.8);
-  const [minP, setMinP] = useState(0.1);
+  const [k, setK] = useState(3);
   const [selectedToken, setSelectedToken] = useState(null);
 
   // Compute scaled logits
   const scaledLogits = baseLogits.map(l => l / temperature);
-  // Apply Min-P filtering
-  const filteredLogits = minPLogits(scaledLogits, minP);
+  // Apply Top-K filtering
+  const filteredLogits = topKLogits(scaledLogits, k);
   // Probabilities before and after filtering
   const probs = softmax(scaledLogits);
   const filteredProbs = softmax(filteredLogits);
@@ -40,7 +39,7 @@ export default function MinPDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 w-full">
       <div className="w-full">
-        <h1 className="text-2xl font-bold mb-4">Min-P Filtering Demo</h1>
+        <h1 className="text-2xl font-bold mb-4">Top-K Filtering Demo</h1>
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-1">Input Text</label>
           <div className="bg-blue-50 rounded px-4 py-3 text-base font-mono">
@@ -48,7 +47,7 @@ export default function MinPDashboard() {
           </div>
         </div>
         <p className="mb-4 text-gray-700">
-          Min-P filtering dynamically removes low-probability tokens based on the peak probability in the current distribution.
+          Top-K filtering keeps only the <b>k</b> tokens with the highest logits, discarding all others. This enforces a hard cutoff on the number of options.
         </p>
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1 bg-white p-4 rounded-lg shadow-sm">
@@ -68,20 +67,20 @@ export default function MinPDashboard() {
             <div className="mt-2 text-sm">{temperature.toFixed(2)}</div>
           </div>
           <div className="flex-1 bg-white p-4 rounded-lg shadow-sm">
-            <label className="block font-semibold mb-2">Min-P (p)</label>
+            <label className="block font-semibold mb-2">Top-K (k)</label>
             <input
               type="range"
-              min="0.01"
-              max="0.5"
-              step="0.01"
-              value={minP}
-              onChange={e => setMinP(Number(e.target.value))}
-              className="w-full accent-green-600"
+              min={1}
+              max={tokens.length}
+              step={1}
+              value={k}
+              onChange={e => setK(Number(e.target.value))}
+              className="w-full accent-violet-600"
             />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>0.01</span><span>0.5</span>
+              <span>1</span><span>{tokens.length}</span>
             </div>
-            <div className="mt-2 text-sm">{minP.toFixed(2)}</div>
+            <div className="mt-2 text-sm">{k}</div>
           </div>
         </div>
         <div className="mb-6">
@@ -96,7 +95,7 @@ export default function MinPDashboard() {
               />
               <Legend />
               <Bar dataKey="probability" name="Original Probability" fill="#8884d8" opacity={0.5} />
-              <Bar dataKey="filteredProbability" name="Filtered Probability" fill="#22c55e" />
+              <Bar dataKey="filteredProbability" name="Filtered Probability" fill="#a21caf" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -118,7 +117,7 @@ export default function MinPDashboard() {
                 {data.map((item) => (
                   <tr
                     key={item.token}
-                    className={`${selectedToken === item.token ? 'bg-green-100' : 'hover:bg-gray-50'} cursor-pointer`}
+                    className={`${selectedToken === item.token ? 'bg-violet-100' : 'hover:bg-gray-50'} cursor-pointer`}
                     onClick={() => setSelectedToken(item.token)}
                   >
                     <td className="px-4 py-2 border-t">{item.token}</td>
@@ -134,12 +133,11 @@ export default function MinPDashboard() {
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold mb-2">How Min-P Filtering Works</h2>
+          <h2 className="text-lg font-semibold mb-2">How Top-K Filtering Works</h2>
           <ol className="list-decimal ml-6 text-gray-700">
-            <li>Calculate the probability of each token using softmax on the (temperature-scaled) logits.</li>
-            <li>Find the maximum probability (<b>max_prob</b>).</li>
-            <li>Set a threshold: <b>min_threshold = max_prob × min_p</b>.</li>
-            <li>Discard (set logit to -∞) any token whose probability is less than <b>min_threshold</b>, unless it's one of the tokens with <b>max_prob</b>.</li>
+            <li>Select the <b>k</b> tokens with the highest logits (after temperature scaling).</li>
+            <li>Set all other logits to <b>-∞</b> (discard them).</li>
+            <li>Sample from the resulting probability distribution (after softmax).</li>
           </ol>
         </div>
       </div>
